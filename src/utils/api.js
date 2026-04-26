@@ -21,8 +21,8 @@ api.interceptors.response.use(
     if (err.response?.status === 401) {
       localStorage.removeItem('moise_token');
       localStorage.removeItem('moise_user');
-      if (window.location.hash !== '#/login') {
-        window.location.hash = '#/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
       }
     }
     return Promise.reject(err);
