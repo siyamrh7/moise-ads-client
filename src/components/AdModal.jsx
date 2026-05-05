@@ -51,10 +51,10 @@ export default function AdModal({ ad, parentAdId, contacts, ads, user, onClose, 
       }
       if (thenDeploy) {
         await api.post('/ads/' + savedAd._id + '/transition', {
-          newStatus: 'live',
-          systemMessage: 'Ray: deployed directly to live (skipped review & production).'
+          newStatus: 'ready',
+          systemMessage: 'Ray: marked the creative ready (Drive link added).'
         });
-        toast('⚡ Deployed directly to Live.');
+        toast('Saved as Ready.');
       } else {
         toast(isNew ? 'Idea created.' : 'Saved.');
       }
@@ -294,7 +294,7 @@ export default function AdModal({ ad, parentAdId, contacts, ads, user, onClose, 
           <button className="btn btn-ghost" onClick={onClose}>Close</button>
           <button className="btn btn-secondary" onClick={() => handleSave()} disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
           {isNew && user.role === 'ray' && (
-            <button className="btn btn-approve" onClick={() => handleSave({ thenDeploy: true })} disabled={saving}>⚡ Save & Deploy directly</button>
+            <button className="btn btn-approve" onClick={() => handleSave({ thenDeploy: true })} disabled={saving}>⚡ Save & mark Ready</button>
           )}
         </footer>
       </div>
