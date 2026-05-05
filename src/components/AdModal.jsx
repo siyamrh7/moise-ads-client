@@ -41,22 +41,21 @@ export default function AdModal({ ad, parentAdId, contacts, ads, user, onClose, 
     setSaving(true);
     try {
       const payload = { ...form, creator: form.creator || null, parentAdId: parentAdId || form.parentAdId || null };
-      let savedAd;
       if (isNew) {
-        const res = await api.post('/ads', payload);
-        savedAd = res.data.ad;
+        const body = thenDeploy ? { ...payload, markReady: true } : payload;
+        await api.post('/ads', body);
+        toast(thenDeploy ? 'Saved as Ready.' : 'Idea created.');
       } else {
         const res = await api.patch('/ads/' + ad._id, payload);
-        savedAd = res.data.ad;
-      }
-      if (thenDeploy) {
-        await api.post('/ads/' + savedAd._id + '/transition', {
-          newStatus: 'ready',
-          systemMessage: 'Ray: marked the creative ready (Drive link added).'
-        });
-        toast('Saved as Ready.');
-      } else {
-        toast(isNew ? 'Idea created.' : 'Saved.');
+        if (thenDeploy) {
+          await api.post('/ads/' + res.data.ad._id + '/transition', {
+            newStatus: 'ready',
+            systemMessage: 'Ray: marked the creative ready (Drive link added).'
+          });
+          toast('Saved as Ready.');
+        } else {
+          toast('Saved.');
+        }
       }
       onSaved();
     } catch (err) {
