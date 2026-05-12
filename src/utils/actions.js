@@ -66,17 +66,19 @@ export function getAvailableActions(ad, currentUser) {
     });
   }
 
-  if (ad.status === 'ready' && u === 'ray') {
+  if (ad.status === 'ready' && (u === 'ray' || u === 'agency')) {
     actions.push({
       id: 'go-live', label: '✓ Set live', style: 'approve', newStatus: 'live',
       hint: 'Approve and run.',
-      systemMessage: 'Ray: set ad live.'
+      systemMessage: (u === 'ray' ? 'Ray' : 'Agency') + ': set ad live.'
     });
-    actions.push({
-      id: 'back-to-prod', label: 'Back to production', style: 'secondary', newStatus: 'production',
-      hint: 'Send back for changes.',
-      systemMessage: 'Ray: sent back to production.'
-    });
+    if (u === 'ray') {
+      actions.push({
+        id: 'back-to-prod', label: 'Back to production', style: 'secondary', newStatus: 'production',
+        hint: 'Send back for changes.',
+        systemMessage: 'Ray: sent back to production.'
+      });
+    }
   }
 
   if (ad.status === 'live' && u === 'ray') {
@@ -136,9 +138,7 @@ export function statusBannerText(ad, currentUser) {
     case 'production': return isWaiter
       ? { title: 'In production — your turn', hint: 'Create content, upload to Drive, mark ready.' }
       : { title: 'In production', hint: 'Agency is creating the content.' };
-    case 'ready': return isWaiter
-      ? { title: 'Ready for final review', hint: 'Check Drive, set live or send back.' }
-      : { title: 'Waiting for Ray', hint: 'Final review on Drive.' };
+    case 'ready': return { title: 'Ready for final review', hint: 'Check Drive and set live.' };
     case 'live': return { title: 'Running live', hint: 'Active on Meta.' };
     case 'paused': return { title: 'Paused', hint: 'Not running. Can be resumed or archived.' };
     case 'archive': return { title: 'Archived', hint: 'No longer active.' };
