@@ -8,7 +8,7 @@ import LibraryFilters from './LibraryFilters.jsx';
 
 const EMPTY_FILTERS = { search: '', phase: '', icp: '', type: '', creator: '', status: 'active', media: '', funnel: '', priority: false };
 
-export default function AdsView({ ads, contacts, user, onChange }) {
+export default function AdsView({ ads, contacts, user, market, onChange }) {
   const toast = useToast();
   const [view, setView] = useState('pipeline');
   const [editingAd, setEditingAd] = useState(null);
@@ -64,6 +64,7 @@ export default function AdsView({ ads, contacts, user, onChange }) {
           contacts={contacts}
           ads={ads}
           user={user}
+          market={market}
           onClose={closeModal}
           onSaved={() => { closeModal(); onChange(); }}
           onIterate={openIteration}

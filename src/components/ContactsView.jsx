@@ -3,7 +3,7 @@ import api from '../utils/api.js';
 import { useToast } from '../contexts/ToastContext.jsx';
 import ContactModal from './ContactModal.jsx';
 
-export default function ContactsView({ contacts, ads, onChange }) {
+export default function ContactsView({ contacts, ads, market, onChange }) {
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState(null);
 
@@ -65,6 +65,7 @@ export default function ContactsView({ contacts, ads, onChange }) {
       {editing !== null && (
         <ContactModal
           contact={editing._id ? editing : null}
+          market={market}
           onClose={() => setEditing(null)}
           onSaved={() => { setEditing(null); onChange(); }}
         />

@@ -1,6 +1,7 @@
 import { useAuth } from '../contexts/AuthContext.jsx';
+import { COUNTRIES } from '../utils/constants.js';
 
-export default function Header() {
+export default function Header({ market, onMarketChange }) {
   const { user, logout } = useAuth();
 
   return (
@@ -12,6 +13,21 @@ export default function Header() {
           <div className="header-sub">Ads Dashboard</div>
         </div>
       </div>
+
+      {market && onMarketChange && (
+        <div className="market-toggle">
+          {COUNTRIES.map(c => (
+            <button
+              key={c.id}
+              className={'market-btn ' + (market === c.id ? 'active' : '')}
+              onClick={() => onMarketChange(c.id)}
+            >
+              {c.flag} {c.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="header-user">
         <span className="header-role">{user?.role === 'ray' ? 'Ray (admin)' : 'Agency'}</span>
         <button className="btn btn-ghost" onClick={logout}>Sign out</button>
@@ -50,6 +66,16 @@ export default function Header() {
           letter-spacing: 0.05em;
           text-transform: uppercase;
         }
+        .market-toggle {
+          display: inline-flex; background: var(--cream-100);
+          border-radius: var(--radius-sm); padding: 3px;
+        }
+        .market-btn {
+          padding: 7px 14px; background: none; border: none;
+          font-size: 13px; font-weight: 500; color: var(--ink-soft);
+          border-radius: 4px; transition: all 0.15s; white-space: nowrap;
+        }
+        .market-btn.active { background: white; color: var(--ink); box-shadow: var(--shadow-sm); }
         .header-user { display: flex; align-items: center; gap: 12px; }
         .header-role {
           font-size: 12px;
@@ -59,8 +85,9 @@ export default function Header() {
           border-radius: 12px;
         }
         @media (max-width: 640px) {
-          .header { padding: 12px 16px; }
+          .header { padding: 12px 16px; flex-wrap: wrap; }
           .header-sub { display: none; }
+          .market-toggle { order: 3; width: 100%; justify-content: center; }
         }
       `}</style>
     </header>

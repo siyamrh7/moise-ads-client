@@ -11,15 +11,21 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('coverage');
+  const [market, setMarket] = useState(() => localStorage.getItem('moise_market') || 'NL');
   const [ads, setAds] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  function changeMarket(id) {
+    localStorage.setItem('moise_market', id);
+    setMarket(id);
+  }
+
   const reload = useCallback(async () => {
     try {
       const [adsRes, contactsRes] = await Promise.all([
-        api.get('/ads'),
-        api.get('/contacts')
+        api.get('/ads', { params: { country: market } }),
+        api.get('/contacts', { params: { country: market } })
       ]);
       setAds(adsRes.data.ads);
       setContacts(contactsRes.data.contacts);
@@ -28,9 +34,9 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, market]);
 
-  useEffect(() => { reload(); }, [reload]);
+  useEffect(() => { setLoading(true); reload(); }, [reload]);
 
   if (loading) return <div className="loading">Loading dashboard…</div>;
 
@@ -42,7 +48,7 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard">
-      <Header />
+      <Header market={market} onMarketChange={changeMarket} />
 
       <nav className="tabs">
         {tabs.map(t => (
@@ -65,10 +71,10 @@ export default function DashboardPage() {
           }} />
         )}
         {activeTab === 'ads' && (
-          <AdsView ads={ads} contacts={contacts} user={user} onChange={reload} />
+          <AdsView ads={ads} contacts={contacts} user={user} market={market} onChange={reload} />
         )}
         {activeTab === 'contacts' && (
-          <ContactsView contacts={contacts} ads={ads} onChange={reload} />
+          <ContactsView contacts={contacts} ads={ads} market={market} onChange={reload} />
         )}
       </main>
 

@@ -10,7 +10,7 @@ const EMPTY = {
   visualRef: '', visualDesc: '', driveLink: '', notes: ''
 };
 
-export default function AdModal({ ad, parentAdId, contacts, ads, user, onClose, onSaved, onIterate }) {
+export default function AdModal({ ad, parentAdId, contacts, ads, user, market, onClose, onSaved, onIterate }) {
   const toast = useToast();
   const isNew = !ad;
   const [form, setForm] = useState(() => {
@@ -42,7 +42,7 @@ export default function AdModal({ ad, parentAdId, contacts, ads, user, onClose, 
     try {
       const payload = { ...form, creator: form.creator || null, parentAdId: parentAdId || form.parentAdId || null };
       if (isNew) {
-        const body = thenDeploy ? { ...payload, markReady: true } : payload;
+        const body = { ...payload, country: market, ...(thenDeploy ? { markReady: true } : {}) };
         await api.post('/ads', body);
         toast(thenDeploy ? 'Saved as Ready.' : 'Idea created.');
       } else {

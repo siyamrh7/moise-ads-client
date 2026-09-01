@@ -1,6 +1,11 @@
 // All domain constants — single source of truth on the frontend.
 // Mirror of the backend enums; keep in sync if you extend them.
 
+export const COUNTRIES = [
+  { id: 'NL', label: 'Netherlands', flag: '🇳🇱' },
+  { id: 'DE', label: 'Germany', flag: '🇩🇪' }
+];
+
 export const PHASES = [
   { id: 'unaware', label: 'Unaware', short: 'Unaware', cls: 'tag-phase-unaware', funnel: 'top' },
   { id: 'problem', label: 'Problem aware', short: 'Problem', cls: 'tag-phase-problem', funnel: 'top' },

@@ -15,7 +15,7 @@ const CHANNELS = [
   { key: 'phone', label: 'Phone', href: v => 'tel:' + v.replace(/\s/g, '') }
 ];
 
-export default function ContactModal({ contact, onClose, onSaved }) {
+export default function ContactModal({ contact, market, onClose, onSaved }) {
   const toast = useToast();
   const isNew = !contact;
   const [form, setForm] = useState(() => contact ? { ...EMPTY, ...contact } : { ...EMPTY });
@@ -27,7 +27,7 @@ export default function ContactModal({ contact, onClose, onSaved }) {
     if (!form.name.trim()) { toast('Give the contact a name.'); return; }
     setSaving(true);
     try {
-      if (isNew) await api.post('/contacts', form);
+      if (isNew) await api.post('/contacts', { ...form, country: market });
       else await api.patch('/contacts/' + contact._id, form);
       toast(isNew ? 'Contact added.' : 'Contact updated.');
       onSaved();
